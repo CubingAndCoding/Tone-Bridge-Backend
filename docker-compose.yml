@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  tonebridge-backend:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - HOST=0.0.0.0
+      - PORT=5000
+      - EMOTION_MODEL_NAME=m3hrdadfi/emotion-english-distilroberta-base
+      - TRANSCRIPTION_MODEL_NAME=openai/whisper-base
+      - UPLOAD_FOLDER=uploads
+      - MAX_CONTENT_LENGTH=16777216
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add Redis for caching (future enhancement)
+  # redis:
+  #   image: redis:alpine
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+
+volumes:
+  redis_data: 

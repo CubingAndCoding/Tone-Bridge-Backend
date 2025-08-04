@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: tonebridge-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: false
+      - key: DISABLE_LOGGING
+        value: true
+      - key: LOG_LEVEL
+        value: WARNING
+      - key: RATE_LIMIT_ENABLED
+        value: true
+      - key: RATE_LIMIT_REQUESTS
+        value: 100
+      - key: RATE_LIMIT_WINDOW
+        value: 60
+      - key: ALLOWED_ORIGINS
+        value: https://your-frontend-domain.vercel.app
+      - key: SECRET_KEY
+        generateValue: true 
