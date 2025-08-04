@@ -3,7 +3,9 @@ services:
     name: tonebridge-backend
     env: python
     plan: free
-    buildCommand: pip install -r requirements-deploy.txt
+    buildCommand: |
+      pip install -r requirements-deploy.txt
+      python setup_deploy.py
     startCommand: python run.py
     envVars:
       - key: FLASK_ENV

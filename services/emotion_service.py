@@ -12,11 +12,13 @@ try:
     from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
     import torch
     TRANSFORMERS_AVAILABLE = True
-except ImportError:
+    print("✅ PyTorch/Transformers available for emotion detection")
+except ImportError as e:
     TRANSFORMERS_AVAILABLE = False
-    print("Warning: PyTorch/Transformers not available. Using rule-based emotion detection.")
+    print(f"⚠️ Warning: PyTorch/Transformers not available: {e}")
+    print("⚠️ Using rule-based emotion detection as fallback")
 
-from sklearn.preprocessing import StandardScaler
+# StandardScaler import removed for deployment - not needed for basic emotion detection
 from utils.logger import setup_logger
 from utils.error_handlers import ModelError
 from utils.audio_utils import audio_processor
@@ -30,7 +32,7 @@ class EmotionService:
     def __init__(self):
         self.text_emotion_pipeline = None
         self.audio_emotion_model = None
-        self.scaler = StandardScaler()
+        self.scaler = None  # Not needed for deployment
         self._initialize_models()
     
     def _initialize_models(self):
