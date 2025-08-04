@@ -21,7 +21,10 @@ except ImportError as e:
 # StandardScaler import removed for deployment - not needed for basic emotion detection
 from utils.logger import setup_logger
 from utils.error_handlers import ModelError
-from utils.audio_utils import audio_processor
+try:
+    from utils.audio_utils import audio_processor
+except ImportError:
+    from utils.audio_utils_deploy import audio_processor
 from config import Config
 
 logger = setup_logger(__name__)
