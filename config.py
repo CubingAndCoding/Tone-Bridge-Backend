@@ -42,6 +42,20 @@ class Config:
     USE_LIGHTWEIGHT_MODELS = os.getenv('USE_LIGHTWEIGHT_MODELS', 'True').lower() == 'true'
     MAX_AUDIO_SIZE = int(os.getenv('MAX_AUDIO_SIZE', 5 * 1024 * 1024))  # 5MB for free tier
     
+    # Audio settings
+    AUDIO_SAMPLE_RATE = 16000
+    
+    # Emotion emojis
+    EMOTION_EMOJIS = {
+        'happy': '😊', 'sad': '😢', 'angry': '😠', 'fear': '😨', 
+        'surprise': '😲', 'disgust': '🤢', 'neutral': '😐'
+    }
+    
+    @classmethod
+    def get_emotion_emoji(cls, emotion: str) -> str:
+        """Get emoji for emotion"""
+        return cls.EMOTION_EMOJIS.get(emotion.lower(), '😐')
+    
     # Rate limiting (optional)
     RATE_LIMIT_ENABLED = os.getenv('RATE_LIMIT_ENABLED', 'False').lower() == 'true'
     RATE_LIMIT_REQUESTS = int(os.getenv('RATE_LIMIT_REQUESTS', 100))  # requests per minute

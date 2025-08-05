@@ -40,6 +40,12 @@ class TranscriptionService:
         """Initialize speech recognition models"""
         import importlib
         logger.info(f"TRANSFORMERS_AVAILABLE: {TRANSFORMERS_AVAILABLE}")
+        
+        # For free tier, skip transformers entirely
+        if Config.USE_LIGHTWEIGHT_MODELS:
+            logger.info("Free tier mode: Using speech_recognition library only")
+            return
+            
         if TRANSFORMERS_AVAILABLE:
             try:
                 torch_version = importlib.import_module('torch').__version__
@@ -95,8 +101,12 @@ class TranscriptionService:
             audio_array, sample_rate = audio_processor.load_audio(audio_data, format=audio_format)
             audio_array = audio_processor.preprocess_audio(audio_array, sample_rate)
             
+            # For free tier, use speech_recognition only
+            if Config.USE_LIGHTWEIGHT_MODELS:
+                logger.info("Free tier mode: Using speech_recognition only")
+                result = self._transcribe_with_speech_recognition(audio_data, audio_format)
             # Try Whisper first (better accuracy)
-            if TRANSFORMERS_AVAILABLE and self.whisper_pipeline:
+            elif TRANSFORMERS_AVAILABLE and self.whisper_pipeline:
                 logger.info("Using Whisper for transcription")
                 result = self._transcribe_with_whisper(audio_array, sample_rate)
             else:

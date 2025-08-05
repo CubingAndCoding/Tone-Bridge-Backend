@@ -42,6 +42,11 @@ class EmotionService:
         """Initialize emotion detection models"""
         logger.info(f"TRANSFORMERS_AVAILABLE for emotion: {TRANSFORMERS_AVAILABLE}")
         
+        # For free tier, skip transformers entirely
+        if Config.USE_LIGHTWEIGHT_MODELS:
+            logger.info("Free tier mode: Using rule-based emotion detection only")
+            return
+            
         if not TRANSFORMERS_AVAILABLE:
             logger.info("PyTorch/Transformers not available. Using rule-based emotion detection.")
             return
@@ -92,8 +97,12 @@ class EmotionService:
                     'model': 'rule_based'
                 }
             
+            # For free tier, use rule-based detection only
+            if Config.USE_LIGHTWEIGHT_MODELS:
+                logger.info("Free tier mode: Using rule-based emotion detection")
+                return self._detect_emotion_rule_based(text)
             # Use transformer model if available
-            if TRANSFORMERS_AVAILABLE and self.text_emotion_pipeline:
+            elif TRANSFORMERS_AVAILABLE and self.text_emotion_pipeline:
                 logger.info("Using AI-based emotion detection (transformer model)")
                 # Get emotion prediction
                 result = self.text_emotion_pipeline(text)
