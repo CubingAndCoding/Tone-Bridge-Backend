@@ -4,13 +4,16 @@ ToneBridge Backend Runner
 """
 
 import os
-from app import app
+from app import create_app
 from config import get_config
 
 def main():
     """Main application entry point"""
     # Get configuration
     config = get_config()
+    
+    # Create the Flask app
+    app = create_app(config)
     
     # Set up environment
     host = os.getenv('HOST', config.HOST)
