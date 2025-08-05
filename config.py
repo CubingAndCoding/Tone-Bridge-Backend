@@ -36,6 +36,11 @@ class Config:
     # Model settings
     TRANSCRIPTION_MODEL = os.getenv('TRANSCRIPTION_MODEL', 'whisper-1')
     EMOTION_MODEL = os.getenv('EMOTION_MODEL', 'emotion-english-distilroberta-base')
+    TRANSCRIPTION_MODEL_NAME = os.getenv('TRANSCRIPTION_MODEL_NAME', 'openai/whisper-base')
+    
+    # Free tier optimizations
+    USE_LIGHTWEIGHT_MODELS = os.getenv('USE_LIGHTWEIGHT_MODELS', 'True').lower() == 'true'
+    MAX_AUDIO_SIZE = int(os.getenv('MAX_AUDIO_SIZE', 5 * 1024 * 1024))  # 5MB for free tier
     
     # Rate limiting (optional)
     RATE_LIMIT_ENABLED = os.getenv('RATE_LIMIT_ENABLED', 'False').lower() == 'true'

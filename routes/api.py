@@ -89,7 +89,7 @@ def transcribe_audio():
         if not audio_b64:
             raise ValidationError("No audio data provided")
         
-        # Decode base64 audio
+                # Decode base64 audio
         try:
             audio_data = base64.b64decode(audio_b64)
             logger.info(f"Audio data decoded successfully: {len(audio_data)} bytes, format: {audio_format}")
@@ -99,6 +99,10 @@ def transcribe_audio():
                 raise ValidationError("Audio data is empty after base64 decoding")
             if len(audio_data) < 100:  # Very small audio files are suspicious
                 logger.warning(f"Audio data seems very small: {len(audio_data)} bytes")
+            
+            # Check file size limits for free tier
+            if len(audio_data) > Config.MAX_AUDIO_SIZE:
+                raise ValidationError(f"Audio file too large ({len(audio_data)} bytes). Maximum size for free tier is {Config.MAX_AUDIO_SIZE} bytes.")
                 
         except Exception as e:
             logger.error(f"Base64 decoding failed: {str(e)}")
@@ -339,8 +343,11 @@ def get_models():
             'text_classification': emotion_service.text_emotion_pipeline is not None,
             'audio_features': True
         },
-        'supported_emotions': Config.SUPPORTED_EMOTIONS,
-        'emotion_emojis': Config.EMOTION_EMOJIS
+        'supported_emotions': ['happy', 'sad', 'angry', 'fear', 'surprise', 'disgust', 'neutral'],
+        'emotion_emojis': {
+            'happy': '😊', 'sad': '😢', 'angry': '😠', 'fear': '😨', 
+            'surprise': '😲', 'disgust': '🤢', 'neutral': '😐'
+        }
     }, "Model information retrieved")) 
 
 @api_bp.route('/tts', methods=['POST'])

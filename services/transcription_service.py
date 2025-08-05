@@ -59,10 +59,16 @@ class TranscriptionService:
             else:
                 device = "cpu"
                 logger.info("Using CPU for transcription")
-            logger.info(f"Initializing Whisper pipeline with model: {Config.TRANSCRIPTION_MODEL_NAME}")
+            # Use smaller model for free tier
+            model_name = Config.TRANSCRIPTION_MODEL_NAME
+            if Config.USE_LIGHTWEIGHT_MODELS:
+                model_name = "openai/whisper-tiny"  # Much smaller model
+                logger.info("Using lightweight model for free tier deployment")
+            
+            logger.info(f"Initializing Whisper pipeline with model: {model_name}")
             self.whisper_pipeline = pipeline(
                 "automatic-speech-recognition",
-                model=Config.TRANSCRIPTION_MODEL_NAME,
+                model=model_name,
                 device=device
             )
             logger.info("Transcription models initialized successfully")
