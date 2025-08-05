@@ -22,6 +22,6 @@ services:
       - key: RATE_LIMIT_WINDOW
         value: 60
       - key: ALLOWED_ORIGINS
-        value: https://your-frontend-domain.vercel.app
+        value: https://tonebridge53.vercel.app
       - key: SECRET_KEY
         generateValue: true 
